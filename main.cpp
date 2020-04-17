@@ -23,35 +23,37 @@ void keyboard(unsigned char key, int x, int y);
 
 // funcao principal
 int main(int argc, char** argv){
-  std::cout << "Comandos: \n\n\tw - acelerar\n\ts - retroceder\n\ta - virar para a esquerda\n\ts - virar para a direita\n\tr - resetar o carro para a posicao inicial\n\n\tcolete os cubos roxos";
-  glutInit(&argc, argv);                              // inicializa o glut
-  glutInitDisplayMode (GLUT_SINGLE | GLUT_RGB);           // especifica o uso de cores e buffers
-  glutInitWindowSize (800, 600);                          // especifica as dimensoes da janela
-  glutInitWindowPosition (100, 100);                      // especifica aonde a janela aparece na tela
-  glutCreateWindow ("Exemplo projeçoes");              // cria a janela
+  std::cout << "Comandos: \n\n\tw - acelerar\n\ts - retroceder\n\ta - virar para a esquerda\n\td - virar para a direita\n\tr - resetar o carro para a posicao inicial\n\n\tcolete os cubos roxos";
+  glutInit(&argc, argv);
+  glutInitDisplayMode (GLUT_SINGLE | GLUT_RGB);
+  glutInitWindowSize (800, 600);
+  glutInitWindowPosition (100, 100);
+  glutCreateWindow ("Exemplo projeçoes");
   init();
-  glutDisplayFunc(display);                               // funcao que sera redesenhada pelo GLUT
-  glutKeyboardFunc(keyboard);                             // funcoes de teclado
-  glutMainLoop();                                         // mostra todas as janelas criadas
+  glutDisplayFunc(display);
+  glutKeyboardFunc(keyboard);
+  glutMainLoop();
   return 0;
 }
 
 // definicao de cada funcao
 
 void init(void){
-  glClearColor(0.0, 0.0, 0.0,0.0);    // cor de fundo
+  glClearColor(0.0, 0.0, 0.0,0.0);
   glMatrixMode( GL_PROJECTION );
   glLoadIdentity();
-  glOrtho (0, 800, 0, 600, -1200.0 ,1200.0);     // modo de projecao ortogonal
+  glOrtho (0, 800, 0, 600, -1200.0 ,1200.0);
   glMatrixMode( GL_MODELVIEW );
   glLoadIdentity();
+
+  //Visão isométrica
   glRotatef(angle, 1.0, 1.0, 0.0);
 
 }
 
 
 void display(void){
-    glClear(GL_COLOR_BUFFER_BIT);               // limpa a janela
+    glClear(GL_COLOR_BUFFER_BIT);
     glColor3f (0.0, 0.0, 0.0);
 
 
@@ -60,6 +62,7 @@ void display(void){
     glPushMatrix();
     glTranslatef(200.0,250.0,0.0);
 
+    //Terreno
     glBegin(GL_QUADS);
     glColor3f(0.0,0.2,0.0);
     glVertex3f(-600.0,0.0,-1200.0);
@@ -68,6 +71,7 @@ void display(void){
     glVertex3f(-600.0,0.0,1200.0);
     glEnd();
 
+    //Rua
     glColor3f(0.10,0.10,0.10);
     glBegin(GL_QUADS);
     glVertex3f(50.0,0.0,-1200.0);
@@ -76,6 +80,7 @@ void display(void){
     glVertex3f(225.0,0.0,-1200.0);
     glEnd();
 
+    //Listras da rua
     glColor3f(1.0,1.0,1.0);
     glPushMatrix();
     glTranslatef(137.5,0.0,-1200.0);
@@ -92,10 +97,10 @@ void display(void){
     glutSolidCube(2);
     glPopMatrix();
     }
-
     glPopMatrix();
 
-     glPushMatrix();
+    //Carro
+    glPushMatrix();
     glTranslatef(carDiagonal,0.0,carPos);
     glRotatef(carRot,0.0,1.0,0.0);
     glColor3f(0.8,0.8,0.8);
@@ -113,7 +118,7 @@ void display(void){
 
 
 
-
+    //Colunas
     glPushMatrix();
     glTranslatef(100.0,0.0,0.0);
     glPushMatrix();
@@ -129,12 +134,14 @@ void display(void){
     glPopMatrix();
     glPopMatrix();
 
+    //Cubo para coletar
     glPushMatrix();
     glTranslatef(cubex,10.0,cubez);
     glColor3f(0.3,0.1,0.7);
     glutSolidCube(40);
     glPopMatrix();
 
+    //Barra entre colunas
     glPushMatrix();
     if(carPos<90 && carDiagonal > 50 && carDiagonal < 200){
       glColor3f(0.0,1.0,0.0);
@@ -149,6 +156,7 @@ void display(void){
     glPopMatrix();
     glPopMatrix();
 
+    //Redisplay enquanto houver velocidade no carro
     Sleep(10);
     if(velocity>0 || velocity < 0){
         if(carPos<cubez+50 && carPos > cubez-50 && carDiagonal > cubex-50 && carDiagonal < cubex+50){
@@ -185,6 +193,7 @@ void keyboard(unsigned char key, int x, int y){
         exit(0);
         break;
 
+    //Vira o carro para esquerda
     case 97:
         if(carRot == 360){
             carRot = 0;
@@ -192,6 +201,8 @@ void keyboard(unsigned char key, int x, int y){
         carRot = carRot + 15;
         glutPostRedisplay();
         break;
+
+    //Reseta o carro
     case 114:
         carRot = 90;
         carDiagonal = 100;
@@ -200,7 +211,7 @@ void keyboard(unsigned char key, int x, int y){
         glutPostRedisplay();
      break;
 
-
+    //Vira o carro para direita
     case 100:
         if(carRot == 0){
             carRot = 360;
@@ -209,12 +220,14 @@ void keyboard(unsigned char key, int x, int y){
         glutPostRedisplay();
      break;
 
+    //Acelera o carro
     case 119:
         velocity = velocity + 15;
         glutPostRedisplay();
 
         break;
 
+    //Desacelera o carro
     case 115:
         velocity = velocity - 5;
              glutPostRedisplay();
