@@ -23,6 +23,7 @@ void keyboard(unsigned char key, int x, int y);
 
 // funcao principal
 int main(int argc, char** argv){
+  std::cout << "Comandos: \n\n\tw - acelerar\n\ts - retroceder\n\ta - virar para a esquerda\n\ts - virar para a direita\n\tr - resetar o carro para a posicao inicial\n\n\tcolete os cubos roxos";
   glutInit(&argc, argv);                              // inicializa o glut
   glutInitDisplayMode (GLUT_SINGLE | GLUT_RGB);           // especifica o uso de cores e buffers
   glutInitWindowSize (800, 600);                          // especifica as dimensoes da janela
@@ -191,6 +192,14 @@ void keyboard(unsigned char key, int x, int y){
         carRot = carRot + 15;
         glutPostRedisplay();
         break;
+    case 114:
+        carRot = 90;
+        carDiagonal = 100;
+        carPos = 400;
+        velocity = 0;
+        glutPostRedisplay();
+     break;
+
 
     case 100:
         if(carRot == 0){
