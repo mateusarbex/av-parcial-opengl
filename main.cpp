@@ -15,15 +15,18 @@ float cubex = rand() % 700 - 200;
 float cubez = rand() % 700 - 200;
 float angle = 30;
 float carRot = 90;
+int speed = 1;
 void init(void);
 float carDiagonal = 100;
+float carDiagonal2 = 180;
 float carPos = 400;
+float carPos2 = 500;
 void display(void);
 void keyboard(unsigned char key, int x, int y);
 
 // funcao principal
 int main(int argc, char** argv){
-  std::cout << "Comandos: \n\n\tw - acelerar\n\ts - retroceder\n\ta - virar para a esquerda\n\td - virar para a direita\n\tr - resetar o carro para a posicao inicial\n\n\tcolete os cubos roxos";
+  std::cout << "Comandos: \n\n\tw - acelerar\n\ts - retroceder\n\ta - virar para a esquerda\n\td - virar para a direita\n\tc - mudar a velocidade do segundo carro\n\tr - resetar o carro para a posicao inicial\n\n\tcolete os cubos roxos";
   glutInit(&argc, argv);
   glutInitDisplayMode (GLUT_SINGLE | GLUT_RGB);
   glutInitWindowSize (800, 600);
@@ -99,7 +102,7 @@ void display(void){
     }
     glPopMatrix();
 
-    //Carro
+    //Carro 1
     glPushMatrix();
     glTranslatef(carDiagonal,0.0,carPos);
     glRotatef(carRot,0.0,1.0,0.0);
@@ -112,6 +115,23 @@ void display(void){
     glScalef(2,1,2);
     glTranslatef(0.0,10.0,0.0);
     glColor3f(0.5,0.9,0.5);
+    glutSolidCube(20);
+    glPopMatrix();
+    glPopMatrix();
+
+    //Carro 2
+    glPushMatrix();
+    glTranslatef(carDiagonal2,0.0,carPos2);
+    glRotatef(90,0.0,1.0,0.0);
+    glColor3f(0.5,0.0,0.0);
+    glPushMatrix();
+    glScalef(10,1,5);
+    glutSolidCube(10);
+    glPopMatrix();
+    glPushMatrix();
+    glScalef(2,1,2);
+    glTranslatef(0.0,10.0,0.0);
+    glColor3f(0.5,0.0,0.5);
     glutSolidCube(20);
     glPopMatrix();
     glPopMatrix();
@@ -178,8 +198,41 @@ void display(void){
             carDiagonal = carDiagonal + velocity*cos((carRot*M_PI)/180);
             velocity = velocity + 1;
         }
-    glutPostRedisplay();
+
     }
+    if(carDiagonal2 == 180){
+        if(carPos < carPos2 - 20 && carPos > carPos2 - 180 )
+            if(carDiagonal > 140 && carDiagonal < 200){
+                carPos2 = carPos2;
+            }
+            else{
+               carPos2 = carPos2 - 5 * speed;
+            }
+        else{
+            carPos2 = carPos2 - 5 * speed;
+        }
+    }
+    if(carDiagonal2 == 100){
+        if(carPos < carPos2 + 150 && carPos < carPos2 + 300){
+            if(carDiagonal > 70 && carDiagonal < 130){
+                carPos2 = carPos2;
+            }
+            else{
+               carPos2 = carPos2 + 5 * speed;
+            }
+        }
+        else{
+            carPos2= carPos2 + 5 * speed;
+        }
+    }
+    if (carPos2>1500 && carDiagonal2==100){
+        carDiagonal2 = 180;
+    }
+    if (carPos2<-1500 && carDiagonal2==180){
+        carDiagonal2 = 100;
+    }
+
+    glutPostRedisplay();
 
 
   glFlush();
@@ -200,6 +253,10 @@ void keyboard(unsigned char key, int x, int y){
         }
         carRot = carRot + 15;
         glutPostRedisplay();
+        break;
+
+    case 99:
+        speed++;
         break;
 
     //Reseta o carro
